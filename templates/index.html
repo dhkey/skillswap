@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}SkillSwap | Find Tutors Fast{% endblock %}
+
+{% block content %}
+<section class="hero section-gap">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="shell hero-inner">
+    <div class="hero-badge">Trusted by 40,000+ students across Europe</div>
+    <h1>Learn anything,<br>from <em>someone great</em></h1>
+    <p>SkillSwap connects you with verified tutors who are passionate about teaching and serious about your progress.</p>
+    <div class="hero-actions">
+      <a class="btn btn-hero-primary" href="{{ url_for('tutors') }}">Find your perfect tutor</a>
+      <a class="btn btn-hero-secondary" href="{{ url_for('tutors') }}">Start teaching today</a>
+    </div>
+    <div class="hero-stats" aria-label="Platform stats">
+      <div class="stat-item">
+        <div class="stat-num">8,400+</div>
+        <div class="stat-label">Verified tutors</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">40k+</div>
+        <div class="stat-label">Happy students</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Lesson satisfaction</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="paths section-gap" id="become">
+  <div class="shell">
+    <div class="paths-grid">
+      <article class="path-card student">
+        <div class="path-deco" aria-hidden="true"></div>
+        <div class="path-icon" aria-hidden="true">🎓</div>
+        <h3>For students</h3>
+        <p>Browse expert tutors by subject, compare profiles and reviews, and book your first lesson in minutes.</p>
+        <ul class="path-features">
+          <li><span class="check">✓</span> Verified tutors and quality controls</li>
+          <li><span class="check">✓</span> Instant booking with clear pricing</li>
+          <li><span class="check">✓</span> Secure and protected payments</li>
+          <li><span class="check">✓</span> Rebook support if plans change</li>
+        </ul>
+        <a class="btn btn-path" href="{{ url_for('tutors') }}">Find a tutor</a>
+      </article>
+
+      <article class="path-card tutor">
+        <div class="path-deco" aria-hidden="true"></div>
+        <div class="path-icon" aria-hidden="true">💡</div>
+        <h3>For tutors</h3>
+        <p>Build your student base, set your own schedule, and get paid reliably after each completed lesson.</p>
+        <ul class="path-features">
+          <li><span class="check">✓</span> Keep control of your rates and calendar</li>
+          <li><span class="check">✓</span> High-intent student matching</li>
+          <li><span class="check">✓</span> No upfront platform fees</li>
+          <li><span class="check">✓</span> Predictable payouts</li>
+        </ul>
+        <a class="btn btn-path" href="{{ url_for('tutors') }}">Become a tutor</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="how section-gap" id="how">
+  <div class="shell">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Three steps to your<br>first great lesson</h2>
+    <div class="steps">
+      <article class="step">
+        <div class="step-num">1</div>
+        <h4>Search your subject</h4>
+        <p>Filter tutors by subject, level, language, rating, format, and availability.</p>
+      </article>
+      <article class="step">
+        <div class="step-num">2</div>
+        <h4>Book instantly</h4>
+        <p>Pick a time and confirm in one flow without slow messaging back-and-forth.</p>
+      </article>
+      <article class="step">
+        <div class="step-num">3</div>
+        <h4>Start learning</h4>
+        <p>Join online or in person and only release payment after a completed lesson.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="subjects section-gap">
+  <div class="shell">
+    <div class="section-label">Popular subjects</div>
+    <h2 class="section-title">Whatever you need to learn,<br>we have someone for it</h2>
+    <div class="subject-tags" id="landingSubjectTags">
+      {% for key, label, emoji in popular_subjects %}
+      <button class="subject-tag {% if loop.first %}active{% endif %}" data-subject="{{ key }}" type="button">
+        <span aria-hidden="true">{{ emoji }}</span> {{ label }}
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="trust section-gap" id="trust">
+  <div class="shell">
+    <div class="section-label">Student reviews</div>
+    <h2 class="section-title">Proof from real learners</h2>
+    <div class="reviews-grid">
+      <article class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">The tutor changed how I see calculus. I passed my finals with confidence and finally understand the fundamentals.</p>
+        <div class="reviewer">
+          <div class="avatar" style="background:#4a7c6f;">LM</div>
+          <div>
+            <div class="reviewer-name">Lucia M.</div>
+            <div class="reviewer-role">Engineering student</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">Fast booking, clear communication, and practical coding sessions. My project was finished before deadline.</p>
+        <div class="reviewer">
+          <div class="avatar" style="background:#e8935a;">TK</div>
+          <div>
+            <div class="reviewer-name">Tomas K.</div>
+            <div class="reviewer-role">CS student</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-text">Verification gave us confidence as parents and the tutoring quality improved my daughter's results in one term.</p>
+        <div class="reviewer">
+          <div class="avatar" style="background:#7c6fa4;">AV</div>
+          <div>
+            <div class="reviewer-name">Anna V.</div>
+            <div class="reviewer-role">Parent</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="guarantee section-gap">
+  <div class="shell">
+    <div class="section-label">Our guarantees</div>
+    <h2 class="section-title">Built on trust,<br>backed by promises</h2>
+    <div class="guarantee-cards">
+      <article class="g-card">
+        <div class="g-icon green" aria-hidden="true">🛡️</div>
+        <h4>Verified tutors only</h4>
+        <p>Identity checks and profile screening are required before tutors become bookable.</p>
+      </article>
+      <article class="g-card">
+        <div class="g-icon amber" aria-hidden="true">💳</div>
+        <h4>Safe payment escrow</h4>
+        <p>Payments are held until lesson completion for balanced protection on both sides.</p>
+      </article>
+      <article class="g-card">
+        <div class="g-icon blue" aria-hidden="true">🔁</div>
+        <h4>Free rebook support</h4>
+        <p>If a session falls through, support helps you rebook quickly with another tutor.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section section-gap">
+  <div class="shell">
+    <div class="cta-inner">
+      <h2>Start learning with confidence today</h2>
+      <p>Join thousands of students who found their perfect tutor with SkillSwap.</p>
+      <div class="cta-btns">
+        <a class="btn btn-cta-white" href="{{ url_for('tutors') }}">Find my tutor</a>
+        <a class="btn btn-cta-outline" href="{{ url_for('tutors') }}">Become a tutor</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}SkillSwap | {{ tutor.name }}{% endblock %}
+
+{% block content %}
+<section class="profile-hero section-gap">
+  <div class="profile-hero-bg" aria-hidden="true"></div>
+  <div class="shell profile-hero-inner">
+    <div class="search-breadcrumb">
+      <a href="{{ url_for('landing') }}">Home</a>
+      <span class="search-breadcrumb-sep">›</span>
+      <a href="{{ url_for('tutors') }}">Tutors</a>
+      <span class="search-breadcrumb-sep">›</span>
+      <span>{{ tutor.name }}</span>
+    </div>
+
+    <div class="profile-top">
+      <div class="profile-identity">
+        <div class="profile-avatar" style="background: {{ tutor.avatar_style }};">
+          {{ tutor.initials }}
+          <span class="verified-badge">✓</span>
+        </div>
+        <div class="profile-title-block">
+          <h1>{{ tutor.name }}</h1>
+          <p class="profile-subject">{{ tutor.subject }}</p>
+          <div class="profile-rating-row">
+            <span class="stars-mini">{% if tutor.rating >= 4.8 %}★★★★★{% else %}★★★★☆{% endif %}</span>
+            <span class="profile-rating-value">{{ '%.1f'|format(tutor.rating) }}</span>
+            <span class="profile-rating-reviews">({{ tutor.reviews }} reviews)</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="profile-price-card" aria-label="Lesson pricing">
+        <div class="profile-price-label">Lesson price</div>
+        <div class="profile-price-amount">EUR {{ tutor.price }}</div>
+        <div class="profile-price-unit">per 60 min lesson</div>
+        {% if auth_user %}
+        <button class="btn btn-fill profile-book-btn" type="button">Book lesson</button>
+        {% else %}
+        <a class="btn btn-fill profile-book-btn" href="{{ url_for('login', next=url_for('tutor_profile', slug=tutor.slug)) }}">Log in to book</a>
+        {% endif %}
+      </aside>
+    </div>
+
+    <div class="profile-quick-meta">
+      <span class="profile-meta-chip">{{ tutor.availability }}</span>
+      <span class="profile-meta-chip">{{ tutor.languages }}</span>
+      <span class="profile-meta-chip">{{ tutor.experience }} yrs experience</span>
+      {% for mode in tutor.formats %}
+      <span class="profile-meta-chip mode">{{ "Online" if mode == "online" else "In-person" }}</span>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="profile-content">
+  <div class="shell profile-grid">
+    <div class="profile-main">
+      <article class="profile-panel">
+        <h2>About {{ tutor.name.split(' ')[0] }}</h2>
+        <p>{{ tutor.description }}</p>
+      </article>
+
+      <article class="profile-panel">
+        <h3>Topics</h3>
+        <div class="profile-topic-list">
+          {% for topic in tutor.topics %}
+          <span class="profile-topic-tag">{{ topic }}</span>
+          {% endfor %}
+        </div>
+      </article>
+
+      <article class="profile-panel">
+        <h3>What lessons look like</h3>
+        <ul class="profile-checklist">
+          <li>Clear lesson goal and practical exercises in every session.</li>
+          <li>Step-by-step feedback and personalized homework after class.</li>
+          <li>Progress tracking adapted to your current level.</li>
+        </ul>
+      </article>
+    </div>
+
+    <aside class="profile-side">
+      <article class="profile-side-card">
+        <h3>Tutor details</h3>
+        <dl class="profile-details">
+          <div>
+            <dt>Subject</dt>
+            <dd>{{ tutor.subject }}</dd>
+          </div>
+          <div>
+            <dt>Languages</dt>
+            <dd>{{ tutor.languages }}</dd>
+          </div>
+          <div>
+            <dt>Experience</dt>
+            <dd>{{ tutor.experience }} years</dd>
+          </div>
+          <div>
+            <dt>Availability</dt>
+            <dd>{{ tutor.availability }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="profile-side-card">
+        <h3>Not sure yet?</h3>
+        <p>Compare this tutor with other profiles and choose the best match for your goals.</p>
+        <a class="btn btn-ghost profile-compare-btn" href="{{ url_for('tutors') }}">Back to search</a>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<section class="related-tutors section-gap">
+  <div class="shell">
+    <div class="section-label">More options</div>
+    <h2 class="section-title">Similar tutors you can also book</h2>
+    <div class="related-grid">
+      {% for similar in similar_tutors %}
+      <article class="related-card">
+        <div class="related-card-top">
+          <div class="related-avatar" style="background: {{ similar.avatar_style }};">{{ similar.initials }}</div>
+          <div>
+            <h3>{{ similar.name }}</h3>
+            <p>{{ similar.subject }}</p>
+          </div>
+        </div>
+        <div class="related-meta">{{ '%.1f'|format(similar.rating) }} rating · {{ similar.reviews }} reviews</div>
+        <a class="related-link" href="{{ url_for('tutor_profile', slug=similar.slug) }}">Open profile</a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

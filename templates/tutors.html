@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}SkillSwap | Tutor Search{% endblock %}
+
+{% block content %}
+<section class="search-hero">
+  <div class="search-hero-bg" aria-hidden="true"></div>
+  <div class="shell search-hero-inner">
+    <div class="search-breadcrumb">
+      <a href="{{ url_for('landing') }}">Home</a>
+      <span class="search-breadcrumb-sep">›</span>
+      <span>Find a tutor</span>
+    </div>
+
+    <h1>Find your <em>perfect</em> tutor</h1>
+    <p class="search-hero-sub">{{ tutor_count }} verified tutors available online and in person.</p>
+
+    <div class="search-bar-wrap" role="search" aria-label="Tutor search">
+      <label class="search-bar-field search-wide" for="searchInput">
+        <span class="search-bar-icon" aria-hidden="true">🔍</span>
+        <input type="text" placeholder="Subject, tutor name, or keyword" id="searchInput">
+      </label>
+      <label class="search-bar-field" for="locationInput">
+        <span class="search-bar-icon" aria-hidden="true">📍</span>
+        <input type="text" placeholder="City or online" id="locationInput">
+      </label>
+      <label class="search-bar-field" for="availabilitySelect">
+        <span class="search-bar-icon" aria-hidden="true">📅</span>
+        <select id="availabilitySelect">
+          <option value="">Any availability</option>
+          <option value="today">Available today</option>
+          <option value="tomorrow">Available tomorrow</option>
+          <option value="weekdays">Weekdays</option>
+          <option value="weekends">Weekends</option>
+          <option value="flexible">Flexible</option>
+          <option value="evenings">Evenings</option>
+        </select>
+      </label>
+      <button class="search-bar-btn" id="searchButton" type="button">Search</button>
+    </div>
+
+    <div class="filter-row" id="subjectPills" aria-label="Subject quick filters">
+      <button class="filter-pill active" data-subject="all" type="button">All subjects</button>
+      <button class="filter-pill" data-subject="maths" type="button"><span class="filter-pill-emoji">📐</span> Maths</button>
+      <button class="filter-pill" data-subject="physics" type="button"><span class="filter-pill-emoji">🔬</span> Physics</button>
+      <button class="filter-pill" data-subject="chemistry" type="button"><span class="filter-pill-emoji">🧪</span> Chemistry</button>
+      <button class="filter-pill" data-subject="programming" type="button"><span class="filter-pill-emoji">💻</span> Programming</button>
+      <button class="filter-pill" data-subject="languages" type="button"><span class="filter-pill-emoji">🗣</span> Languages</button>
+      <button class="filter-pill" data-subject="music" type="button"><span class="filter-pill-emoji">🎵</span> Music</button>
+      <button class="filter-pill" data-subject="history" type="button"><span class="filter-pill-emoji">🏛</span> History</button>
+      <button class="filter-pill" data-subject="economics" type="button"><span class="filter-pill-emoji">💰</span> Economics</button>
+    </div>
+  </div>
+</section>
+
+<section class="page-body">
+  <div class="results-header">
+    <div class="results-count">Showing <strong id="resultCount">{{ tutor_count }}</strong> tutors</div>
+    <div class="sort-wrap">
+      <span class="sort-label">Sort by:</span>
+      <div class="sort-group">
+        <button class="sort-btn active" data-sort="rating" type="button">Top rated</button>
+        <button class="sort-btn" data-sort="reviews" type="button">Popularity</button>
+        <button class="sort-btn" data-sort="price-low" type="button">Price: low</button>
+        <button class="sort-btn" data-sort="price-high" type="button">Price: high</button>
+        <button class="sort-btn" data-sort="newest" type="button">Newest</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="filter-toggle-btn" id="toggleFilters" type="button">Show or hide advanced filters</button>
+
+  <div class="filters-panel" id="filtersPanel">
+    <div class="filter-group">
+      <label for="priceMin">Price per lesson (EUR)</label>
+      <div class="range-row">
+        <input class="range-input" type="number" placeholder="Min" id="priceMin" min="0">
+        <span class="range-sep">-</span>
+        <input class="range-input" type="number" placeholder="Max" id="priceMax" min="0">
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label>Minimum rating</label>
+      <div class="star-filter" id="ratingChips">
+        <button class="star-chip" data-rating="0" type="button">Any</button>
+        <button class="star-chip" data-rating="3" type="button">3.0+</button>
+        <button class="star-chip active" data-rating="4" type="button">4.0+</button>
+        <button class="star-chip" data-rating="4.5" type="button">4.5+</button>
+        <button class="star-chip" data-rating="5" type="button">5.0</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label>Format</label>
+      <div class="toggle-row">
+        <button class="toggle-btn active" data-format="online" type="button">Online</button>
+        <button class="toggle-btn active" data-format="in-person" type="button">In-person</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label for="levelSelect">Level</label>
+      <select class="filter-select" id="levelSelect">
+        <option value="">All levels</option>
+        <option value="school">School</option>
+        <option value="university">University</option>
+        <option value="professional">Professional</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tutor-grid" id="tutorGrid">
+    {% for tutor in tutors %}
+    <article
+      class="tutor-card {% if tutor.featured %}featured{% endif %}"
+      data-subject="{{ tutor.subject_key }}"
+      data-rating="{{ '%.1f'|format(tutor.rating) }}"
+      data-price="{{ tutor.price }}"
+      data-format="{{ tutor.formats | join(',') }}"
+      data-reviews="{{ tutor.reviews }}"
+      data-name="{{ tutor.name | lower }}"
+      data-subject-name="{{ tutor.subject | lower }}"
+      data-topics="{{ tutor.topics | join(' ') | lower }}"
+      data-availability="{{ tutor.availability | lower }}"
+      data-index="{{ loop.index }}"
+    >
+      {% if tutor.featured %}
+      <div class="featured-badge">Top rated</div>
+      {% endif %}
+
+      <div class="card-top">
+        <div class="tutor-avatar" style="background: {{ tutor.avatar_style }};">
+          {{ tutor.initials }}
+          <span class="verified-badge">✓</span>
+        </div>
+        <div class="card-name-block">
+          <div class="tutor-name">{{ tutor.name }}</div>
+          <div class="tutor-subject">{{ tutor.subject }}</div>
+          <div class="rating-row">
+            <div class="stars-mini">{% if tutor.rating >= 4.8 %}★★★★★{% else %}★★★★☆{% endif %}</div>
+            <div class="rating-num">{{ '%.1f'|format(tutor.rating) }}</div>
+            <div class="rating-reviews">({{ tutor.reviews }} reviews)</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="card-desc">{{ tutor.description }}</p>
+
+      <div class="card-tags">
+        {% for topic in tutor.topics %}
+        <span class="card-tag">{{ topic }}</span>
+        {% endfor %}
+        {% for mode in tutor.formats %}
+        <span class="card-tag amber">{{ "Online" if mode == "online" else "In-person" }}</span>
+        {% endfor %}
+      </div>
+
+      <div class="card-meta">
+        <span class="meta-item">
+          <span class="meta-dot {% if tutor.formats|length > 1 %}both{% elif tutor.formats[0] == 'online' %}online{% else %}offline{% endif %}"></span>
+          {{ tutor.availability }}
+        </span>
+        <span class="meta-item">{{ tutor.languages }}</span>
+        <span class="meta-item">{{ tutor.experience }} yrs experience</span>
+      </div>
+
+      <div class="card-footer">
+        <div class="price-block">
+          <div class="price-amount">EUR {{ tutor.price }}</div>
+          <div class="price-unit">per 60 min lesson</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn-view" href="{{ url_for('tutor_profile', slug=tutor.slug) }}">Profile</a>
+          {% if auth_user %}
+          <a class="btn-book" href="{{ url_for('tutor_profile', slug=tutor.slug) }}">Book lesson</a>
+          {% else %}
+          <a class="btn-book" href="{{ url_for('login', next=url_for('tutor_profile', slug=tutor.slug)) }}">Book lesson</a>
+          {% endif %}
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="empty-state" id="emptyState" hidden>
+    <div class="empty-icon">🔎</div>
+    <h3>No tutors match these filters</h3>
+    <p>Try widening your subject, rating, or price range.</p>
+  </div>
+
+  <div class="load-more-row">
+    <button class="btn-load-more" id="loadMoreButton" type="button">Load more tutors</button>
+    <div class="load-hint" id="loadHint">Showing {{ tutor_count }} of {{ tutor_count }} tutors</div>
+  </div>
+</section>
+{% endblock %}

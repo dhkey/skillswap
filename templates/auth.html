@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}
+SkillSwap | {% if auth_mode == "signup" %}Create account{% else %}Log in{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="auth-page section-gap">
+  <div class="auth-bg" aria-hidden="true"></div>
+  <div class="shell auth-shell">
+    <article class="auth-card" aria-label="Authentication form">
+      <div class="auth-tabs" role="tablist" aria-label="Authentication views">
+        <a
+          class="auth-tab {{ 'active' if auth_mode == 'login' else '' }}"
+          href="{{ url_for('login', next=next_target) }}"
+          role="tab"
+          aria-selected="{{ 'true' if auth_mode == 'login' else 'false' }}"
+        >
+          Log in
+        </a>
+        <a
+          class="auth-tab {{ 'active' if auth_mode == 'signup' else '' }}"
+          href="{{ url_for('signup', next=next_target) }}"
+          role="tab"
+          aria-selected="{{ 'true' if auth_mode == 'signup' else 'false' }}"
+        >
+          Sign up
+        </a>
+      </div>
+
+      {% if auth_mode == "signup" %}
+      <h1>Create your SkillSwap account</h1>
+      <p class="auth-sub">Join verified tutors and students in minutes.</p>
+      {% else %}
+      <h1>Welcome back</h1>
+      <p class="auth-sub">Log in to continue booking and managing lessons.</p>
+      {% endif %}
+
+      <form
+        class="auth-form"
+        action="{{ url_for('signup') if auth_mode == 'signup' else url_for('login') }}"
+        method="post"
+        novalidate
+      >
+        {% if next_target %}
+        <input type="hidden" name="next" value="{{ next_target }}">
+        {% endif %}
+
+        {% if auth_mode == "signup" %}
+        <label class="auth-label" for="fullName">Full name</label>
+        <input
+          class="auth-input"
+          id="fullName"
+          name="full_name"
+          type="text"
+          autocomplete="name"
+          value="{{ form_data.get('full_name', '') }}"
+          placeholder="Jane Doe"
+          required
+        >
+        {% endif %}
+
+        <label class="auth-label" for="email">Email</label>
+        <input
+          class="auth-input"
+          id="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          value="{{ form_data.get('email', '') }}"
+          placeholder="you@example.com"
+          required
+        >
+
+        <label class="auth-label" for="password">Password</label>
+        <input
+          class="auth-input"
+          id="password"
+          name="password"
+          type="password"
+          autocomplete="{{ 'new-password' if auth_mode == 'signup' else 'current-password' }}"
+          placeholder="At least 8 characters"
+          required
+        >
+
+        {% if auth_mode == "signup" %}
+        <label class="auth-label" for="confirmPassword">Confirm password</label>
+        <input
+          class="auth-input"
+          id="confirmPassword"
+          name="confirm_password"
+          type="password"
+          autocomplete="new-password"
+          placeholder="Re-enter your password"
+          required
+        >
+        {% endif %}
+
+        <button class="btn btn-fill auth-submit" type="submit">
+          {% if auth_mode == "signup" %}Create account{% else %}Log in{% endif %}
+        </button>
+      </form>
+
+      {% if auth_mode == "signup" %}
+      <p class="auth-switch">Already have an account? <a href="{{ url_for('login', next=next_target) }}">Log in</a></p>
+      {% else %}
+      <p class="auth-switch">New to SkillSwap? <a href="{{ url_for('signup', next=next_target) }}">Create an account</a></p>
+      {% endif %}
+    </article>
+  </div>
+</section>
+{% endblock %}
