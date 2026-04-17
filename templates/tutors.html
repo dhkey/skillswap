@@ -140,7 +140,7 @@
           <div class="rating-row">
             <div class="stars-mini">{% if tutor.rating >= 4.8 %}★★★★★{% else %}★★★★☆{% endif %}</div>
             <div class="rating-num">{{ '%.1f'|format(tutor.rating) }}</div>
-            <div class="rating-reviews">({{ tutor.reviews }} reviews)</div>
+            <a class="rating-reviews rating-reviews-link" href="{{ url_for('tutor_profile', slug=tutor.slug) }}#reviews">({{ tutor.reviews }} reviews)</a>
           </div>
         </div>
       </div>

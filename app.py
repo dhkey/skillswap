@@ -195,6 +195,121 @@ POPULAR_SUBJECTS = [
     ("economics", "Economics", "💰"),
 ]
 
+REVIEW_LIBRARY_BY_SUBJECT = {
+    "maths": [
+        {
+            "author": "Lenka R.",
+            "lesson_focus": "Calculus exam prep",
+            "stars": "★★★★★",
+            "text": "Every lesson had a clear goal and I finally stopped guessing through derivative problems.",
+        },
+        {
+            "author": "David S.",
+            "lesson_focus": "Statistics",
+            "stars": "★★★★★",
+            "text": "Great structure, patient explanations, and practical examples that made probability click fast.",
+        },
+    ],
+    "programming": [
+        {
+            "author": "Tereza N.",
+            "lesson_focus": "Python fundamentals",
+            "stars": "★★★★★",
+            "text": "I went from copying code to understanding it, and now I can build assignments on my own.",
+        },
+        {
+            "author": "Ondrej V.",
+            "lesson_focus": "React project",
+            "stars": "★★★★☆",
+            "text": "Very practical sessions with real debugging workflow and clean code habits.",
+        },
+    ],
+    "languages": [
+        {
+            "author": "Klara M.",
+            "lesson_focus": "Conversation confidence",
+            "stars": "★★★★★",
+            "text": "Lessons are dynamic and speaking-focused, so I started using the language naturally.",
+        },
+        {
+            "author": "Peter H.",
+            "lesson_focus": "Exam preparation",
+            "stars": "★★★★★",
+            "text": "Clear correction style and useful homework that improved both grammar and fluency.",
+        },
+    ],
+    "physics": [
+        {
+            "author": "Marek T.",
+            "lesson_focus": "Mechanics",
+            "stars": "★★★★★",
+            "text": "Complex topics were broken down into simple steps and my problem-solving speed improved.",
+        },
+        {
+            "author": "Sara B.",
+            "lesson_focus": "Thermodynamics",
+            "stars": "★★★★☆",
+            "text": "Very clear derivations and strong exam strategy tips that helped me avoid common mistakes.",
+        },
+    ],
+    "chemistry": [
+        {
+            "author": "Nina P.",
+            "lesson_focus": "Organic chemistry",
+            "stars": "★★★★★",
+            "text": "I understood reaction mechanisms for the first time instead of memorizing random formulas.",
+        },
+        {
+            "author": "Roman K.",
+            "lesson_focus": "Biology support",
+            "stars": "★★★★☆",
+            "text": "Great visual explanations and quick recap quizzes at the end of each lesson.",
+        },
+    ],
+    "music": [
+        {
+            "author": "Eliska C.",
+            "lesson_focus": "Piano technique",
+            "stars": "★★★★★",
+            "text": "My hand positioning and timing improved quickly thanks to detailed but encouraging feedback.",
+        },
+        {
+            "author": "Jan D.",
+            "lesson_focus": "Music theory",
+            "stars": "★★★★★",
+            "text": "Theory was taught through songs I know, which made learning much more enjoyable.",
+        },
+    ],
+    "history": [
+        {
+            "author": "Monika S.",
+            "lesson_focus": "Essay writing",
+            "stars": "★★★★☆",
+            "text": "I learned how to build stronger arguments and structure essays with better evidence.",
+        },
+        {
+            "author": "Jakub F.",
+            "lesson_focus": "European history",
+            "stars": "★★★★★",
+            "text": "Lessons connected events clearly, so timelines and causes finally made sense.",
+        },
+    ],
+    "economics": [
+        {
+            "author": "Veronika A.",
+            "lesson_focus": "Microeconomics",
+            "stars": "★★★★★",
+            "text": "Graphs and concepts were explained with real-world examples that were easy to remember.",
+        },
+        {
+            "author": "Filip R.",
+            "lesson_focus": "Finance modules",
+            "stars": "★★★★☆",
+            "text": "Very focused sessions and great help with case-study interpretation under time pressure.",
+        },
+    ],
+}
+
 
 def _slugify(value):
     slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
@@ -217,7 +332,14 @@ def _attach_tutor_slugs(tutors):
         seen.add(slug)
 
 
+def _attach_tutor_reviews(tutors):
+    for tutor in tutors:
+        library_reviews = REVIEW_LIBRARY_BY_SUBJECT.get(tutor["subject_key"], [])
+        tutor["review_entries"] = [dict(item) for item in library_reviews]
+
+
 _attach_tutor_slugs(TUTORS)
+_attach_tutor_reviews(TUTORS)
 
 
 def get_db():
@@ -477,7 +599,7 @@ def tutor_profile(slug):
     )
 
     return render_template(
-        "tutor_profile.html",
+        "tutor_profile.html",   
         active_page="tutors",
         tutor=tutor,
         similar_tutors=similar_tutors[:3],

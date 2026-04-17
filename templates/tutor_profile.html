@@ -26,7 +26,7 @@
           <div class="profile-rating-row">
             <span class="stars-mini">{% if tutor.rating >= 4.8 %}★★★★★{% else %}★★★★☆{% endif %}</span>
             <span class="profile-rating-value">{{ '%.1f'|format(tutor.rating) }}</span>
-            <span class="profile-rating-reviews">({{ tutor.reviews }} reviews)</span>
+            <a class="profile-rating-reviews profile-rating-reviews-link" href="#reviews">({{ tutor.reviews }} reviews)</a>
           </div>
         </div>
       </div>
@@ -78,6 +78,32 @@
           <li>Step-by-step feedback and personalized homework after class.</li>
           <li>Progress tracking adapted to your current level.</li>
         </ul>
+      </article>
+
+      <article class="profile-panel profile-reviews-panel" id="reviews">
+        <div class="profile-reviews-head">
+          <h3>Student reviews</h3>
+          <p>Average {{ '%.1f'|format(tutor.rating) }} from {{ tutor.reviews }} verified reviews.</p>
+        </div>
+
+        {% if tutor.review_entries %}
+        <div class="profile-reviews-list">
+          {% for review in tutor.review_entries %}
+          <article class="profile-review-card">
+            <div class="profile-review-row">
+              <div>
+                <strong class="profile-review-author">{{ review.author }}</strong>
+                <div class="profile-review-focus">{{ review.lesson_focus }}</div>
+              </div>
+              <div class="profile-review-stars">{{ review.stars }}</div>
+            </div>
+            <p>{{ review.text }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="profile-review-empty">No written reviews yet for this tutor.</p>
+        {% endif %}
       </article>
     </div>
 
