@@ -829,6 +829,54 @@ button {
   color: var(--sage);
 }
 
+.auth-role-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.auth-role-option {
+  border: 1.5px solid var(--card-border);
+  background: var(--cream);
+  border-radius: 11px;
+  padding: 10px 11px;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  cursor: pointer;
+  transition: border-color var(--ease), background var(--ease), box-shadow var(--ease);
+}
+
+.auth-role-option:focus-within {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 4px rgba(74, 124, 111, 0.14);
+}
+
+.auth-role-option input {
+  margin-top: 2px;
+  accent-color: var(--sage);
+}
+
+.auth-role-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.auth-role-copy strong {
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.auth-role-copy small {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
+
+.auth-role-option input:checked + .auth-role-copy strong {
+  color: var(--sage);
+}
+
 .auth-input {
   border: 1.5px solid var(--card-border);
   background: var(--cream);
@@ -2035,6 +2083,10 @@ button {
 
   .auth-tabs {
     gap: 6px;
+  }
+
+  .auth-role-options {
+    grid-template-columns: 1fr;
   }
 
   .footer-inner {

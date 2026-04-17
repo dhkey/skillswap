@@ -26,6 +26,7 @@ app.config["SECRET_KEY"] = os.environ.get(
 
 DATABASE_PATH = Path(app.root_path) / "skillswap.db"
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+USER_ROLES = {"student", "tutor"}
 
 TUTORS = [
     {
@@ -241,11 +242,18 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             full_name TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
+            role TEXT NOT NULL DEFAULT 'student' CHECK(role IN ('student', 'tutor')),
             password_hash TEXT NOT NULL,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
         """
     )
+
+    columns = {row["name"] for row in db.execute("PRAGMA table_info(users)").fetchall()}
+    if "role" not in columns:
+        db.execute("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'student'")
+
+    db.execute("UPDATE users SET role = 'student' WHERE role IS NULL OR role NOT IN ('student', 'tutor')")
     db.commit()
 
 
@@ -254,7 +262,7 @@ def get_user_by_id(user_id):
         return None
 
     return get_db().execute(
-        "SELECT id, full_name, email, password_hash FROM users WHERE id = ?",
+        "SELECT id, full_name, email, role, password_hash FROM users WHERE id = ?",
         (user_id,),
     ).fetchone()
 
@@ -264,7 +272,7 @@ def get_user_by_email(email):
         return None
 
     return get_db().execute(
-        "SELECT id, full_name, email, password_hash FROM users WHERE email = ?",
+        "SELECT id, full_name, email, role, password_hash FROM users WHERE email = ?",
         (email,),
     ).fetchone()
 
@@ -368,24 +376,28 @@ def signup():
     if current_user() is not None:
         return redirect(url_for("landing"))
 
-    form_data = {"full_name": "", "email": ""}
+    form_data = {"full_name": "", "email": "", "role": "student"}
     next_target = request.args.get("next", "")
 
     if request.method == "POST":
         full_name = request.form.get("full_name", "").strip()
         email = request.form.get("email", "").strip().lower()
+        role = request.form.get("role", "student").strip().lower()
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
         next_target = request.form.get("next", "")
 
         form_data["full_name"] = full_name
         form_data["email"] = email
+        form_data["role"] = role
 
         errors = []
         if len(full_name) < 2:
             errors.append("Please enter your full name.")
         if not _is_valid_email(email):
             errors.append("Please enter a valid email address.")
+        if role not in USER_ROLES:
+            errors.append("Please choose whether you are signing up as a student or tutor.")
         if not _is_valid_password(password):
             errors.append("Password must be at least 8 characters and include letters and numbers.")
         if password != confirm_password:
@@ -399,8 +411,8 @@ def signup():
         else:
             db = get_db()
             db.execute(
-                "INSERT INTO users (full_name, email, password_hash) VALUES (?, ?, ?)",
-                (full_name, email, generate_password_hash(password)),
+                "INSERT INTO users (full_name, email, role, password_hash) VALUES (?, ?, ?, ?)",
+                (full_name, email, role, generate_password_hash(password)),
             )
             db.commit()
 
@@ -461,7 +473,7 @@ def tutor_profile(slug):
             item["subject_key"] != tutor["subject_key"],
             -item["rating"],
             -item["reviews"],
-        )
+            )
     )
 
     return render_template(

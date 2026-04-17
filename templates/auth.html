@@ -58,6 +58,37 @@ SkillSwap | {% if auth_mode == "signup" %}Create account{% else %}Log in{% endif
           placeholder="Jane Doe"
           required
         >
+
+        <span class="auth-label">I am signing up as</span>
+        <div class="auth-role-options" role="radiogroup" aria-label="Choose account role">
+          <label class="auth-role-option">
+            <input
+              type="radio"
+              name="role"
+              value="student"
+              {% if form_data.get('role', 'student') == 'student' %}checked{% endif %}
+              required
+            >
+            <span class="auth-role-copy">
+              <strong>Student</strong>
+              <small>I want to find and book tutors</small>
+            </span>
+          </label>
+
+          <label class="auth-role-option">
+            <input
+              type="radio"
+              name="role"
+              value="tutor"
+              {% if form_data.get('role') == 'tutor' %}checked{% endif %}
+              required
+            >
+            <span class="auth-role-copy">
+              <strong>Tutor</strong>
+              <small>I want to offer lessons</small>
+            </span>
+          </label>
+        </div>
         {% endif %}
 
         <label class="auth-label" for="email">Email</label>
